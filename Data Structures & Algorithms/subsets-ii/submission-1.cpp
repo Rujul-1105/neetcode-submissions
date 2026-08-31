@@ -1,25 +1,32 @@
 class Solution {
    public:
-    void f(int i, vector<int>& nums, vector<int>& curr, vector<vector<int>>& ans) {
-        ans.push_back(curr); // because every combination is a valis subset
+    void f(vector<int>& curr, vector<int>& nums, vector<vector<int>>& ans, vector<int>& vis) {
+        if (curr.size() == nums.size()) {  // new permutation length same as the original
+            ans.push_back(curr);
+            return;
+        }
 
-        for (int k = i; k < (int)nums.size(); k++) {
-            if (k > i && nums[k] == nums[k - 1]) continue;
-
-            curr.push_back(nums[k]);
-            f(k + 1, nums, curr, ans);
-            curr.pop_back();
+        for (int i = 0; i < (int)nums.size(); i++) {
+            if (!vis[i]) {
+                vis[i] = 1;
+                curr.push_back(nums[i]);
+                f(curr, nums, ans, vis);
+                curr.pop_back();
+                vis[i] = 0;
+            }
         }
     }
 
-    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
-        if ((int)nums.size() == 0) return {{}};
-
-        vector<vector<int>> ans;
+    vector<vector<int>> permute(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> vis(n, 0);
         vector<int> curr;
+        vector<vector<int>> ans;
 
-        sort(nums.begin(), nums.end());
-        f(0, nums, curr, ans);
+        f(curr, nums, ans, vis);
+        // n! number of permutation possible and the for loop runs n time
+        // time complexity => O(n*n!)
+
         return ans;
     }
 };
